@@ -1,58 +1,56 @@
-const man = {
-   species: 'human',
-   name: 'Charles',
-   gender: 'male',
-   legs: 2,
-   hands: 2,
-   saying: 'What up',
-   friends: ['Luna']
-};
+class Inhabitant {
+   constructor(species, name, gender, legs, saying) {
+      this.species = species;
+      this.name = name;
+      this.gender = gender;
+      this.saying = saying;
+      this.legs = legs;
+      this.friends = [];
+   }
 
-const woman = {
-   species: 'human',
-   name: 'Raven',
-   gender: 'female',
-   legs: 2,
-   hands: 2,
-   saying: 'Hey!',
-   friends: ['Anna']
-};
+   makeFriends(...friends) {
+      this.friends = [...friends];
+   }
 
-const cat = {
-   species: 'cat',
-   name: 'Vincent',
-   gender: 'male',
-   legs: 2,
-   hands: 0,
-   saying: 'Meow',
-   friends: ['Anna']
-};
+   getFriendsList(friends) {
+      return friends.length > 0 ? friends.map(friend => friend.name).join(', ') : 'no friends';
+   }
 
-const dog = {
-   species: 'dog',
-   name: 'Luna',
-   gender: 'female',
-   legs: 2,
-   hands: 0,
-   saying: 'Woof-woof!',
-   friends: ['Charles']
-};
+   introduce() {
+      return [this.species, this.name, this.gender, this.legs, this.saying, this.getFriendsList(this.friends)].join('; ');
+   }
+}
 
-const catWoman = {
-   species: 'catWoman',
-   name: 'Anna',
-   gender: 'male',
-   legs: 2,
-   hands: 2,
-   saying: cat.saying,
-   friends: ['Raven', 'Vincent']
-};
+class Human extends Inhabitant {
+   constructor(name, gender, saying) {
+      super('human', name, gender, 2, saying);
+      this.hands = 2;
+   }
 
-let inhabitants = [man, woman, cat, dog, catWoman];
+   introduce() {
+      return [this.species, this.name, this.gender, this.legs, this.hands, this.saying, this.getFriendsList(this.friends)].join('; ');
+   }
+}
 
-inhabitants.forEach(inhabitant => {
-   print(Object.keys(inhabitant)
-      .map(key => Array.isArray(inhabitant[key]) ? inhabitant[key].join(', ') : inhabitant[key])
-      .join('; ')
-   )
-})
+class Dog extends Inhabitant {
+   constructor(name, gender) {
+      super('dog', name, gender, 4, 'Woof-woof');
+   }
+}
+
+class Cat extends Inhabitant {
+   constructor(name, gender) {
+      super('cat', name, gender, 4, 'Meow');
+   }
+}
+
+const man = new Human('Charles', 'male', 'What up');
+const woman = new Human('Raven', 'female', 'Hey!');
+const dog = new Dog('Luna', 'female');
+const cat = new Cat('Vincent', 'male');
+
+man.makeFriends(woman);
+woman.makeFriends(man);
+dog.makeFriends(man, woman);
+
+[man, woman, dog, cat].forEach(inhabitant => print(inhabitant.introduce()))
